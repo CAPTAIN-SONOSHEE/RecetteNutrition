@@ -1,4 +1,31 @@
-async function fetchNutritionData() {
+document.addEventListener("DOMContentLoaded", function() {
+  const fetchDataButton = document.getElementById("fetchDataButton");
+
+  fetchDataButton.addEventListener("click", async function() {
+    const tableBody = document.getElementById("tableBody");
+    const ingredientsInput = document.getElementById("ingredientsInput").value;
+
+    tableBody.innerHTML = "";
+
+    if (ingredientsInput.trim() === "") {
+      alert("Please enter ingredients before fetching data.");
+      return;
+    }
+
+    await fetchNutritionData(ingredientsInput);
+    
+    const nutritionTable = document.getElementById("nutritionTable");
+    if (nutritionTable.style.display === "none") {
+      nutritionTable.style.display = "table";
+    }
+
+    clearTableButton.addEventListener("click", function() {
+      clearTable();
+    });
+  });
+
+
+async function fetchNutritionData(ingredients) {
     const url = "https://api.edamam.com/api/nutrition-details?app_id=8ec854ea&app_key=35a97e80e414231dd6f81d6d5501fec9";
     const requestData = {
       method: "POST",
@@ -7,18 +34,14 @@ async function fetchNutritionData() {
       },
       body: JSON.stringify({
         "title": "string",
-        "ingr": [
-          "1 cup rice",
-          "10 oz chickpeas",
-          "12 oz pineapple"
-        ]
+        "ingr": ingredients.split("\n")
       })
     };
 
     try {
       const response = await fetch(url, requestData);
       const data = await response.json();
-
+      
       // Remplir le tableau avec les données de l'appel API
       const tableBody = document.getElementById("tableBody");
       data.ingredients.forEach(ingredient => {
@@ -46,26 +69,36 @@ async function fetchNutritionData() {
         row.appendChild(weightCell);
 
         tableBody.appendChild(row);
-      });
 
-      // Remplir la carte avec les données de nutrition
-      document.getElementById("totalFat").textContent = data.totalNutrients.FAT.quantity.toFixed(1) + " " + data.totalNutrients.FAT.unit;
-      document.getElementById("saturatedFat").textContent = data.totalNutrients.FASAT.quantity.toFixed(1) + " " + data.totalNutrients.FASAT.unit;
-      document.getElementById("transFat").textContent = data.totalNutrients.FATRN.quantity.toFixed(1) + " " + data.totalNutrients.FATRN.unit;
-      document.getElementById("cholesterol").textContent = Math.round(data.totalNutrients.CHOLE.quantity) + " " + data.totalNutrients.CHOLE.unit;
-      document.getElementById("sodium").textContent = Math.round(data.totalNutrients.NA.quantity) + " " + data.totalNutrients.NA.unit;
-      document.getElementById("totalCarbohydrate").textContent = data.totalNutrients.CHOCDF.quantity.toFixed(1) + " " + data.totalNutrients.CHOCDF.unit;
-      document.getElementById("dietaryFiber").textContent = data.totalNutrients.FIBTG.quantity.toFixed(1) + " " + data.totalNutrients.FIBTG.unit;
-      document.getElementById("totalSugars").textContent = data.totalNutrients.SUGAR.quantity.toFixed(1) + " " + data.totalNutrients.SUGAR.unit;
-      document.getElementById("protein").textContent = Math.round(data.totalNutrients.PROCNT.quantity) + " " + data.totalNutrients.PROCNT.unit;
-      document.getElementById("vitaminD").textContent = data.totalNutrients.VITD.quantity.toFixed(1) + " " + data.totalNutrients.VITD.unit;
-      document.getElementById("calcium").textContent = data.totalNutrients.CA.quantity.toFixed(1) + " " + data.totalNutrients.CA.unit;
-      document.getElementById("iron").textContent = data.totalNutrients.FE.quantity.toFixed(1) + " " + data.totalNutrients.FE.unit;
-      document.getElementById("potassium").textContent = Math.round(data.totalNutrients.K.quantity) + " " + data.totalNutrients.K.unit;
+        function formatNutrientValue(value, unit) {
+          return value ? `${value.toFixed(1)} ${unit || "-"}` : "-";
+        }
+        
+        document.getElementById("totalFat").textContent = formatNutrientValue(data.totalNutrients.FAT?.quantity, data.totalNutrients.FAT?.unit);
+        document.getElementById("saturatedFat").textContent = formatNutrientValue(data.totalNutrients.FASAT?.quantity, data.totalNutrients.FASAT?.unit);
+        document.getElementById("transFat").textContent = formatNutrientValue(data.totalNutrients.FATRN?.quantity, data.totalNutrients.FATRN?.unit);
+        document.getElementById("cholesterol").textContent = formatNutrientValue(Math.round(data.totalNutrients.CHOLE?.quantity), data.totalNutrients.CHOLE?.unit);
+        document.getElementById("sodium").textContent = formatNutrientValue(Math.round(data.totalNutrients.NA?.quantity), data.totalNutrients.NA?.unit);
+        document.getElementById("totalCarbohydrate").textContent = formatNutrientValue(data.totalNutrients.CHOCDF?.quantity, data.totalNutrients.CHOCDF?.unit);
+        document.getElementById("dietaryFiber").textContent = formatNutrientValue(data.totalNutrients.FIBTG?.quantity, data.totalNutrients.FIBTG?.unit);
+        document.getElementById("totalSugars").textContent = formatNutrientValue(data.totalNutrients.SUGAR?.quantity, data.totalNutrients.SUGAR?.unit);
+        document.getElementById("protein").textContent = formatNutrientValue(Math.round(data.totalNutrients.PROCNT?.quantity), data.totalNutrients.PROCNT?.unit);
+        document.getElementById("vitaminD").textContent = formatNutrientValue(data.totalNutrients.VITD?.quantity, data.totalNutrients.VITD?.unit);
+        document.getElementById("calcium").textContent = formatNutrientValue(data.totalNutrients.CA?.quantity, data.totalNutrients.CA?.unit);
+        document.getElementById("iron").textContent = formatNutrientValue(data.totalNutrients.FE?.quantity, data.totalNutrients.FE?.unit);
+        document.getElementById("potassium").textContent = formatNutrientValue(Math.round(data.totalNutrients.K?.quantity), data.totalNutrients.K?.unit);
+
+       
+       
+      });
     } catch (error) {
       console.error("An error occurred:", error);
     }
   }
 
-  // Appel de la fonction pour récupérer et afficher les données de nutrition
-  fetchNutritionData();
+  function clearTable() {
+    const tableBody = document.getElementById("tableBody");
+    tableBody.innerHTML = "";
+    document.getElementById("nutritionTable").style.display = "none";
+  }
+});

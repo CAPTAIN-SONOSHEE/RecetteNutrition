@@ -4,11 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nutrition Facts</title>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="src/js/index.js"></script>
 
   <style>
-    span{
-        font-weight: normal;
+    span {
+      font-weight: normal;
     }
 
     .card {
@@ -16,74 +19,161 @@
       float: right;
       margin-left: 20px;
     }
-
   </style>
 
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="row">
-          <div class="col-md-3">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Qty</th>
-                  <th>Unit</th>
-                  <th>Food</th>
-                  <th>Calories</th>
-                  <th>Weight</th>
-                </tr>
-              </thead>
-              <tbody id="tableBody">
-              </tbody>
-            </table>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-7">
+        <form id="ingredientForm">
+          <div class="form-group">
+            <label for="ingredientsInput">Enter Ingredients:</label>
+            <textarea class="form-control" id="ingredientsInput" rows="15" style="resize: none;" placeholder="E.g., 1 cup rice, 10 oz chickpeas"></textarea>
           </div>
-          <div class="col-md-9">
-            <div class="card">
-              <div class="card-header">
-                <h2 class="text-center">Nutrition Facts</h2>
-                <h5 class="text-center">Amount Per Serving</h5>
-                <h4 class="text-center font-weight-bold" id="calories"></h4>
-              </div>
-              <div class="card-body">
-                <p class="font-weight-bold">Total Fat <span id="totalFat"></span></p>
-                <hr class="ml-4">
-                <p class="ml-4">Saturated Fat <span id="saturatedFat"></span></p>
-                <hr class="ml-4">
-                <p class="ml-4">Trans Fat <span id="transFat"></span></p>
-                <hr class="ml-4">
-    
-                <p class="font-weight-bold">Cholesterol <span id="cholesterol"></span></p>
-                <hr>
-                
-                <p class="font-weight-bold">Sodium <span id="sodium"></span></p>
-                <hr>
-                
-                <p class="font-weight-bold">Total Carbohydrate <span id="totalCarbohydrate"></span></p>
-                <hr>
-                <p class="ml-4">Dietary Fiber <span id="dietaryFiber"></span></p>
-                <hr class="ml-4">
-                <p class="ml-4">Total Sugars <span id="totalSugars"></span></p>
-                <hr class="ml-4">
-                <p class="ml-4">Includes - Added Sugars</p>
-                <hr class="ml-4">
-    
-    
-                <p class="font-weight-bold">Protein <span id="protein"></span></p>
-                <hr>
-                <p class="ml-4">Vitamin D <span id="vitaminD"></span></p>
-                <hr class="ml-4">
-                <p class="ml-4">Calcium <span id="calcium"></span></p>
-                <hr class="ml-4">
-                <p class="ml-4">Iron <span id="iron"></span></p>
-                <hr class="ml-4">
-                <p class="ml-4">Potassium <span id="potassium"></span></p>
-              </div>
+          <button type="button" class="btn btn-primary" id="fetchDataButton">Analyze</button>
+          <button type="button" class="btn btn-danger" id="clearTableButton">Clear</button>
+        </form>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Qty</th>
+              <th>Unit</th>
+              <th>Food</th>
+              <th>Calories</th>
+              <th>Weight</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
+      </div>
+      <div class="container mt-5">
+        <table class="table table-bordered" id="nutritionTable" style="display: none;">
+          <thead>
+            <tr>
+              <th>Nutrient</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody id="nutritionTableBody">
+            <tr>
+              <td>Total Fat</td>
+              <td id="totalFat"></td>
+            </tr>
+            <tr>
+              <td>Saturated Fat</td>
+              <td id="saturatedFat"></td>
+            </tr>
+            <tr>
+              <td>Trans Fat</td>
+              <td id="transFat"></td>
+            </tr>
+            <tr>
+              <td>Cholesterol</td>
+              <td id="cholesterol"></td>
+            </tr>
+            <tr>
+              <td>Sodium</td>
+              <td id="sodium"></td>
+            </tr>
+            <tr>
+              <td>Total Carbohydrate</td>
+              <td id="totalCarbohydrate"></td>
+            </tr>
+            <tr>
+              <td>Dietary Fiber</td>
+              <td id="dietaryFiber"></td>
+            </tr>
+            <tr>
+              <td>Total Sugars</td>
+              <td id="totalSugars"></td>
+            </tr>
+            <tr>
+              <td>Protein</td>
+              <td id="protein"></td>
+            </tr>
+            <tr>
+              <td>Vitamin D</td>
+              <td id="vitaminD"></td>
+            </tr>
+            <tr>
+              <td>Calcium</td>
+              <td id="calcium"></td>
+            </tr>
+            <tr>
+              <td>Iron</td>
+              <td id="iron"></td>
+            </tr>
+            <tr>
+              <td>Potassium</td>
+              <td id="potassium"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+          <!--  <div class="col-md-2">
+              <button type="button" class="btn btn-primary" id="openModalButton" data-toggle="modal" data-target="#nutritionModal">
+                Open Nutrition Facts
+              </button>
             </div>
           </div>
         </div>
-      </div>
-    <script src="src/js/index.js"></script>
-      
+        <div class="modal fade" id="nutritionModal" tabindex="-1" aria-labelledby="nutritionModalLabel" aria-hidden="true"  style="display: none;">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="nutritionModalLabel">Nutrition Facts</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="card">
+                  <div class="card-header">
+                    <h2 class="text-center">Nutrition Facts</h2>
+                    <h5 class="text-center">Amount Per Serving</h5>
+                    <h4 class="text-center font-weight-bold" id="calories"></h4>
+                  </div>
+                  <div class="card-body">
+                    <p class="font-weight-bold">Total Fat <span id="totalFat"></span></p>
+                    <hr class="ml-4">
+                    <hr class="ml-4">
+                      <p class="ml-4">Saturated Fat <span id="saturatedFat"></span></p>
+                      <hr class="ml-4">
+                      <p class="ml-4">Trans Fat <span id="transFat"></span></p>
+                      <hr class="ml-4">
+          
+                      <p class="font-weight-bold">Cholesterol <span id="cholesterol"></span></p>
+                      <hr>
+                      
+                      <p class="font-weight-bold">Sodium <span id="sodium"></span></p>
+                      <hr>
+                      
+                      <p class="font-weight-bold">Total Carbohydrate <span id="totalCarbohydrate"></span></p>
+                      <hr>
+                      <p class="ml-4">Dietary Fiber <span id="dietaryFiber"></span></p>
+                      <hr class="ml-4">
+                      <p class="ml-4">Total Sugars <span id="totalSugars"></span></p>
+                      <hr class="ml-4">
+                      <p class="ml-4">Includes - Added Sugars</p>
+                      <hr class="ml-4">
+          
+          
+                      <p class="font-weight-bold">Protein <span id="protein"></span></p>
+                      <hr>
+                      <p class="ml-4">Vitamin D <span id="vitaminD"></span></p>
+                      <hr class="ml-4">
+                      <p class="ml-4">Calcium <span id="calcium"></span></p>
+                      <hr class="ml-4">
+                      <p class="ml-4">Iron <span id="iron"></span></p>
+                      <hr class="ml-4">
+                      <p class="ml-4">Potassium <span id="potassium"></span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>-->
+  </div>
 </body>
 </html>
