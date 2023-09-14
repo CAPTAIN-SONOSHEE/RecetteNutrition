@@ -26,20 +26,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 async function fetchNutritionData(ingredients) {
-    const url = "https://api.edamam.com/api/nutrition-details?app_id=8ec854ea&app_key=35a97e80e414231dd6f81d6d5501fec9";
+    const url = "https://localhost:7201/api/edamam-nutrition";
     const requestData = {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "title": "string",
         "ingr": ingredients.split("\n")
       })
     };
 
     try {
       const response = await fetch(url, requestData);
+      raw = await response.text();
       const data = await response.json();
       
       // Remplir le tableau avec les données de l'appel API
@@ -102,3 +102,40 @@ async function fetchNutritionData(ingredients) {
     document.getElementById("nutritionTable").style.display = "none";
   }
 });
+
+/*document.addEventListener("DOMContentLoaded", function() {
+  const fetchDataButton = document.getElementById("fetchDataButton");
+  const ingredientsInput = document.getElementById("ingredientsInput");
+
+  fetchDataButton.addEventListener("click", async function() {
+    const tableBody = document.getElementById("tableBody");
+    const ingredients = ingredientsInput.value;
+
+    tableBody.innerHTML = "";
+
+    if (ingredients.trim() === "") {
+      alert("Veuillez entrer des ingrédients avant de récupérer les données.");
+      return;
+    }
+
+    try {
+      const response = await fetch('https://localhost:7201/api/edamam-nutrition', { // Mettez à jour l'URL ici
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ingredients })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Traitez les données ici
+      } else {
+        console.error('Erreur lors de la récupération des données :', response.statusText);
+      }
+    } catch (error) {
+      console.error("Une erreur s'est produite :", error);
+    }
+  });
+});*/
+
