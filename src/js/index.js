@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
   const fetchDataButton = document.getElementById("fetchDataButton");
+  const saveButton = document.getElementById("saveButton");
 
   fetchDataButton.addEventListener("click", async function() {
     const tableBody = document.getElementById("tableBody");
@@ -12,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
     }
 
+    saveButton.style.display = "inline";
     await fetchNutritionData(ingredientsInput);
     
     const nutritionTable = document.getElementById("nutritionTable");
@@ -33,13 +35,12 @@ async function fetchNutritionData(ingredients) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "ingr": ingredients.split("\n")
+        "ingredients": ingredients.split("\n")
       })
     };
 
     try {
       const response = await fetch(url, requestData);
-      raw = await response.text();
       const data = await response.json();
       
       // Remplir le tableau avec les données de l'appel API
@@ -51,8 +52,32 @@ async function fetchNutritionData(ingredients) {
         const foodCell = document.createElement("td");
         const caloriesCell = document.createElement("td");
         const weightCell = document.createElement("td");
-
-       qtyCell.textContent = ingredient.parsed[0].quantity ? ingredient.parsed[0].quantity.toFixed(1) : "N/A";
+              // Vérifiez si ingredient.parsed[0] est défini
+        if (ingredient.parsed[0]) {
+          const parsed = ingredient.parsed[0];
+          
+          // Vérifiez si les propriétés que vous souhaitez afficher sont définies
+          qtyCell.textContent = parsed.quantity ? parsed.quantity.toFixed(1) : "N/A";
+          unitCell.textContent = parsed.measure ? parsed.measure : "N/A";
+          foodCell.textContent = parsed.food ? parsed.food : "N/A";
+          
+          // Vérifiez si ENERC_KCAL est défini
+          if (parsed.nutrients && parsed.nutrients.ENERC_KCAL) {
+            caloriesCell.textContent = parsed.nutrients.ENERC_KCAL.quantity ? parsed.nutrients.ENERC_KCAL.quantity.toFixed(1) + " " + parsed.nutrients.ENERC_KCAL.unit : "N/A";
+          } else {
+            caloriesCell.textContent = "N/A";
+          }
+          
+          weightCell.textContent = parsed.weight ? parsed.weight.toFixed(1) + " g" : "N/A";
+        } else {
+          // Si ingredient.parsed[0] n'est pas défini, attribuez "N/A" à toutes les cellules
+          qtyCell.textContent = "N/A";
+          unitCell.textContent = "N/A";
+          foodCell.textContent = "N/A";
+          caloriesCell.textContent = "N/A";
+          weightCell.textContent = "N/A";
+        }
+       /*qtyCell.textContent = ingredient.parsed[0].quantity ? ingredient.parsed[0].quantity.toFixed(1) : "N/A";
        
        unitCell.textContent = ingredient.parsed[0].measure ? ingredient.parsed[0].measure : "N/A";
       
@@ -60,14 +85,13 @@ async function fetchNutritionData(ingredients) {
        
        caloriesCell.textContent = ingredient.parsed[0].nutrients.ENERC_KCAL.quantity ? ingredient.parsed[0].nutrients.ENERC_KCAL.quantity.toFixed(1) + " " + ingredient.parsed[0].nutrients.ENERC_KCAL.unit : "N/A";
           
-       weightCell.textContent = ingredient.parsed[0].weight ? ingredient.parsed[0].weight.toFixed(1) + " g"  : "N/A";
+       weightCell.textContent = ingredient.parsed[0].weight ? ingredient.parsed[0].weight.toFixed(1) + " g"  : "N/A";*/
 
         row.appendChild(qtyCell);
         row.appendChild(unitCell);
         row.appendChild(foodCell);
         row.appendChild(caloriesCell);
         row.appendChild(weightCell);
-
         tableBody.appendChild(row);
 
         function formatNutrientValue(value, unit) {
@@ -91,6 +115,16 @@ async function fetchNutritionData(ingredients) {
        
        
       });
+
+      
+      const totalCaloriesRow = document.createElement("tr");
+      const totalCaloriesCell = document.createElement("td");
+      totalCaloriesCell.colSpan = 4; // Définissez la propriété colSpan sur 4 pour qu'elle occupe 4 colonnes
+      totalCaloriesCell.style.textAlign = "center"; // Centrez le contenu
+      totalCaloriesCell.textContent = `Total Calories: ${ data.calories ? data.calories.toFixed(1) + " kcal" : "N/A"}`;
+      totalCaloriesRow.appendChild(totalCaloriesCell);
+      tableBody.appendChild(totalCaloriesRow)
+
     } catch (error) {
       console.error("An error occurred:", error);
     }
@@ -100,7 +134,42 @@ async function fetchNutritionData(ingredients) {
     const tableBody = document.getElementById("tableBody");
     tableBody.innerHTML = "";
     document.getElementById("nutritionTable").style.display = "none";
+    saveButton.style.display = "none"
   }
+
+  // Ajout du gestionnaire d'événements pour le bouton "Save"
+  saveButton.addEventListener("click", async function () {
+    // Récupérez les données d'ingrédients actuelles
+    const ingredients = document.getElementById("ingredientsInput").value;
+
+    // Vérifiez à nouveau si les données d'ingrédients ne sont pas vides
+    if (ingredients.trim() === "") {
+      alert("Please enter ingredients before saving.");
+      return;
+    }
+
+    // Envoyez les données d'ingrédients à votre point de terminaison "mainapi"
+    const apiUrl = "https://example.com/mainapi"; // Remplacez par votre URL réelle
+    const requestData = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ "ingredients" : ingredients.split("\n") }),
+    };
+
+    try {
+      const response = await fetch(apiUrl, requestData);
+
+      if (response.ok) {
+        alert("Ingredients saved successfully!");
+      } else {
+        console.error("Error saving ingredients:", response.statusText);
+      }
+    } catch (error) {
+      console.error("An error occurred while saving ingredients:", error);
+    }
+  });
 });
 
 /*document.addEventListener("DOMContentLoaded", function() {
