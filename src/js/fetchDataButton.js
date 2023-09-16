@@ -21,14 +21,12 @@ document.addEventListener("DOMContentLoaded", function() {
       nutritionTable.style.display = "table";
     }
 
-    clearTableButton.addEventListener("click", function() {
-      clearTable();
-    });
+    
   });
 
-
+  
 async function fetchNutritionData(ingredients) {
-    const url = "https://localhost:7201/api/edamam-nutrition";
+    const url = "https://localhost:7290/middleman";
     const requestData = {
       method: "POST",
       headers: {
@@ -77,16 +75,6 @@ async function fetchNutritionData(ingredients) {
           caloriesCell.textContent = "N/A";
           weightCell.textContent = "N/A";
         }
-       /*qtyCell.textContent = ingredient.parsed[0].quantity ? ingredient.parsed[0].quantity.toFixed(1) : "N/A";
-       
-       unitCell.textContent = ingredient.parsed[0].measure ? ingredient.parsed[0].measure : "N/A";
-      
-       foodCell.textContent = ingredient.parsed[0].food ? ingredient.parsed[0].food : "N/A";
-       
-       caloriesCell.textContent = ingredient.parsed[0].nutrients.ENERC_KCAL.quantity ? ingredient.parsed[0].nutrients.ENERC_KCAL.quantity.toFixed(1) + " " + ingredient.parsed[0].nutrients.ENERC_KCAL.unit : "N/A";
-          
-       weightCell.textContent = ingredient.parsed[0].weight ? ingredient.parsed[0].weight.toFixed(1) + " g"  : "N/A";*/
-
         row.appendChild(qtyCell);
         row.appendChild(unitCell);
         row.appendChild(foodCell);
@@ -129,82 +117,6 @@ async function fetchNutritionData(ingredients) {
       console.error("An error occurred:", error);
     }
   }
-
-  function clearTable() {
-    const tableBody = document.getElementById("tableBody");
-    tableBody.innerHTML = "";
-    document.getElementById("nutritionTable").style.display = "none";
-    saveButton.style.display = "none"
-  }
-
-  // Ajout du gestionnaire d'événements pour le bouton "Save"
-  saveButton.addEventListener("click", async function () {
-    // Récupérez les données d'ingrédients actuelles
-    const ingredients = document.getElementById("ingredientsInput").value;
-
-    // Vérifiez à nouveau si les données d'ingrédients ne sont pas vides
-    if (ingredients.trim() === "") {
-      alert("Please enter ingredients before saving.");
-      return;
-    }
-
-    // Envoyez les données d'ingrédients à votre point de terminaison "mainapi"
-    const apiUrl = "https://example.com/mainapi"; // Remplacez par votre URL réelle
-    const requestData = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ "ingredients" : ingredients.split("\n") }),
-    };
-
-    try {
-      const response = await fetch(apiUrl, requestData);
-
-      if (response.ok) {
-        alert("Ingredients saved successfully!");
-      } else {
-        console.error("Error saving ingredients:", response.statusText);
-      }
-    } catch (error) {
-      console.error("An error occurred while saving ingredients:", error);
-    }
-  });
 });
 
-/*document.addEventListener("DOMContentLoaded", function() {
-  const fetchDataButton = document.getElementById("fetchDataButton");
-  const ingredientsInput = document.getElementById("ingredientsInput");
-
-  fetchDataButton.addEventListener("click", async function() {
-    const tableBody = document.getElementById("tableBody");
-    const ingredients = ingredientsInput.value;
-
-    tableBody.innerHTML = "";
-
-    if (ingredients.trim() === "") {
-      alert("Veuillez entrer des ingrédients avant de récupérer les données.");
-      return;
-    }
-
-    try {
-      const response = await fetch('https://localhost:7201/api/edamam-nutrition', { // Mettez à jour l'URL ici
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ingredients })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // Traitez les données ici
-      } else {
-        console.error('Erreur lors de la récupération des données :', response.statusText);
-      }
-    } catch (error) {
-      console.error("Une erreur s'est produite :", error);
-    }
-  });
-});*/
 
