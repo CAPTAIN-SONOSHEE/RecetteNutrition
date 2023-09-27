@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page d'inscription</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Ajout d'un arrière-plan et d'autres styles pour le thème de la santé */
+        body {
+            background-color: #f2f2f2;
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #28a745;
+            margin: 0 auto;
+        }
+        .card-header {
+            background-color: #28a745;
+            color: white;
+        }
+        /* Centrer le container de connexion */
+        .center-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container center-container">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    Inscription
+                </div>
+                <div class="card-body">
+                    <form action="/register" method="post">
+                        <div class="form-group">
+                            <label for="name">Nom d'utilisateur</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Adresse e-mail</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Mot de passe</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">Confirmer le mot de passe</label>
+                            <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">S'inscrire</button>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <p>Vous avez déjà un compte ? <a href="login.html" class="text-success">Se connecter</a></p>
+                </div>
+            </div>
+        </div>
+</div>
+
+<!-- Ajout des scripts Bootstrap -->
+<!-- ... -->
+<script>
+    // Ajout d'un écouteur d'événement pour le formulaire
+    document.querySelector('form').addEventListener('submit', function(event) {
+        // Empêche le comportement par défaut du formulaire
+        event.preventDefault();
+
+        // Récupération des valeurs du formulaire
+        const nomUtilisateur = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const motDePasse = document.getElementById('password').value;
+        const motDePasseConfirmation = document.getElementById('confirm-password').value;
+
+        // Vérification que les mots de passe correspondent
+        if (motDePasse !== motDePasseConfirmation) {
+            alert('Les mots de passe ne correspondent pas.');
+            return;
+        }
+
+        // Création de l'objet à envoyer
+        const utilisateur = {
+            NomUtilisateur: nomUtilisateur,
+            Email: email,
+            MotDePasse: motDePasse
+        };
+
+        // Envoi de la requête à l'API
+        fetch('https://localhost:7017/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(utilisateur)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.token) {
+                // Stocker le token quelque part (par exemple dans localStorage)
+                localStorage.setItem('jwtToken', data.token);
+                // Rediriger l'utilisateur vers une autre page ou faire quelque chose d'autre
+                window.location.href = 'login.html';
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+        });
+    });
+</script>
+
+<!-- Ajout des scripts Bootstrap -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

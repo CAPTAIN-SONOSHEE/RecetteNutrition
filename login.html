@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page de connexion</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Ajout d'un arrière-plan et d'autres styles pour le thème de la santé */
+        body {
+            background-color: #f2f2f2;
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #28a745;
+            margin: 0 auto; /* Centrer la carte */
+        }
+        .card-header {
+            background-color: #28a745;
+            color: white;
+        }
+        /* Centrer le container de connexion */
+        .center-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container center-container">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        Connexion
+                    </div>
+                    <div class="card-body">
+                        <form action="/login" method="post">
+                            <div class="form-group">
+                                <label for="email">Adresse e-mail</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Mot de passe</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-success">Se connecter</button>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <p>Vous n'avez pas de compte ? <a href="register.html">S'inscrire</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Ajout d'un écouteur d'événement pour le formulaire
+    document.querySelector('form').addEventListener('submit', function(event) {
+        // Empêche le comportement par défaut du formulaire
+        event.preventDefault();
+
+        // Récupération des valeurs du formulaire
+        const email = document.getElementById('email').value;
+        const motDePasse = document.getElementById('password').value;
+
+
+        // Création de l'objet à envoyer
+        const utilisateur = {
+            Email: email,
+            MotDePasse: motDePasse
+        };
+
+        // Envoi de la requête à l'API
+        fetch('https://localhost:7017/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(utilisateur)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.token) {
+                // Stocker le token quelque part (par exemple dans localStorage)
+                localStorage.setItem('jwtToken', data.token);
+                
+                alert('Inscription réussie. Vous allez être redirigé vers la page de connexion.');
+
+                // Rediriger l'utilisateur vers une autre page ou faire quelque chose d'autre
+                window.location.href = 'index.html';
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+        });
+    });
+</script>
+<!-- Ajout des scripts Bootstrap -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
