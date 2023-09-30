@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Calculate BMR</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"></script>
+
+<style>
+    body {
+            background-color: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Style et centrage du formulaire */
+        #bmrForm {
+            background-color: #ffffff;
+            border: 1px solid #28a745;
+            padding: 20px;
+            margin-top: 50px;
+            width: 50%;
+            margin: 0 auto; /* Centrer la carte */
+        }
+
+        /* Style et centrage du résultat et du graphique */
+        #result {
+            margin-top: 20px;
+        }
+
+        #chartContainer {
+            width: 50%;
+            margin-top: 20px;
+            margin: 0 auto; /* Centrer la carte */
+        }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"></script>
+</head>
+<body>
+
+<div class="container center-container">
+    <div class="card">
+        <div class="card-header">
+            Calculate BMR
+        </div>
+        <div class="card-body">
+            <form id="bmrForm">
+                <label for="weight">Weight (kg):</label>
+                    <input type="number" id="weight" name="weight" required min="0"><br><br>
+                
+                <label for="height">Height (cm):</label>
+                    <input type="number" id="height" name="height" required min="0"><br><br>
+                
+                <label for="age">Age:</label>
+                 <input type="number" id="age" name="age" required min="0"><br><br>
+                
+                <label for="sex">Sex:</label>
+                    <select id="sex" name="sex" required>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select><br><br>
+                
+                <label for="activity">Activity Level:</label>
+                    <select id="activity" name="activity" required>
+                        <option value="1.2">Sedentary</option>
+                        <option value="1.375">Lightly Active</option>
+                        <option value="1.55">Active</option>
+                        <option value="1.725">Very Active</option>
+                        <option value="1.9">Extremely Active</option>
+                    </select><br><br>
+                
+                <input type="button" value="Calculate BMR" onclick="calculateBMR()">
+            </form>
+        </div>
+    </div>
+
+    <p id="result" style="margin-left: 200px;"></p>
+   
+    <div id="chartContainer">
+        <canvas id="bmrChart"></canvas>
+    </div>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/src/js/bmrCalculator.js"></script>
+
+</body>
+</html>
